@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Câu lạc bộ Khoa học Công nghệ</title>
+  <style>
+    /* Kiểu chung cho trang */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      background: #f9f9f9;
+    }
+    header {
+      background: #3498db;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+    }
+    header img {
+      width: 100px;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .container {
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    
+    /* Thư viện hình ảnh */
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .image-gallery img {
+      width: 300px;
+      height: auto;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    /* Video */
+    .video-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    video {
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    /* Group Chat Links */
+    .group-chat a {
+      display: inline-block;
+      margin-right: 10px;
+      text-decoration: none;
+      color: #3498db;
+      border: 1px solid #3498db;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .group-chat a:hover {
+      background: #3498db;
+      color: #fff;
+    }
+    
+    /* Biểu mẫu đăng ký */
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    form label {
+      font-weight: bold;
+    }
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    form button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    form button:hover {
+      background: #2980b9;
+    }
+    
+    /* Pseudo-element và pseudo-class */
+    h2::after {
+      content: " ★";
+      color: gold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Phần giới thiệu chi tiết với lớp giả và phần tử giả */
+    .club-intro {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      position: relative;
+      max-width: 800px;
+      margin: 20px auto;
+      transition: box-shadow 0.3s ease;
+    }
+    .club-intro::before {
+      content: "THÔNG TIN CÂU LẠC BỘ:";
+      display: block;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #3498db;
+      margin-bottom: 10px;
+    }
+    .club-intro:hover {
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    .club-intro h2 {
+      margin-top: 0;
+    }
+    .club-intro h3::after {
+      content: " ★";
+      color: gold;
+    }
+    .club-intro p {
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .info {
+      font-style: italic;
+      color: #555;
+    }
+    
+    /* Bảng thành tích */
+    table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #3498db;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo Câu lạc bộ">
+    <h1>Câu lạc bộ Khoa học Công nghệ</h1>
+    <p>Nơi kết nối đam mê và sáng tạo</p>
+  </header>
+  
+  <div class="container">
+    <!-- 1. Giới thiệu (Hợp nhất giới thiệu chung và chi tiết, đẩy lên đầu) -->
+    <section class="club-intro">
+      <h2>Giới thiệu về Câu lạc bộ Khoa học Công nghệ</h2>
+      <p>
+        Câu lạc bộ Khoa học Công nghệ được thành lập với mục tiêu tạo ra môi trường học tập, trao đổi và sáng tạo trong lĩnh vực công nghệ, giúp phát triển các kỹ năng và đam mê của sinh viên. Chúng tôi thường xuyên tổ chức các buổi hội thảo, workshop, và các hoạt động ngoại khóa thú vị.
+      </p>
+      <h3>Thông tin chi tiết</h3>
+      <p class="info">Địa chỉ: Trường THPT Đan Phượng, huyện Đan Phượng, thành phố Hà Nội</p>
+      <p class="info">Ngày thành lập: 16/02/2025</p>
+      <p class="info">Số điện thoại: 6677 15 08</p>
+      <p class="info">Email: clb@congnghe.edu.vn</p>
+    </section>
+    
+    <!-- 2. Hình ảnh -->
+    <section>
+      <h2>Hình ảnh về câu lạc bộ</h2>
+      <div class="image-gallery">
+        <img src="club1.jpg" alt="Hình ảnh hoạt động của câu lạc bộ 1">
+        <img src="club2.jpg" alt="Hình ảnh hoạt động của câu lạc bộ 2">
+        <img src="club3.jpg" alt="Hình ảnh hoạt động của câu lạc bộ 3">
+      </div>
+    </section>
+    
+    <!-- 3. Video giới thiệu -->
+    <section>
+      <h2>Video giới thiệu</h2>
+      <div class="video-container">
+        <video controls>
+          <source src="intro.mp4" type="video/mp4">
+          Trình duyệt của bạn không hỗ trợ video.
+        </video>
+      </div>
+    </section>
+    
+    <!-- 4. Link Group Chat -->
+    <section>
+      <h2>Tham gia Group Chat</h2>
+      <div class="group-chat">
+        <a href="https://chat.example.com/facebook" target="_blank">Group Chat Facebook</a>
+        <a href="https://chat.example.com/zalo" target="_blank">Group Chat Zalo</a>
+      </div>
+    </section>
+    
+    <!-- 5. Bảng thành tích các thành viên CLB -->
+    <section>
+      <h2>Bảng Thành Tích Các Thành Viên CLB</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên Thành Viên</th>
+            <th>Thành Tích</th>
+            <th>Năm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Nguyễn Văn A</td>
+            <td>Giải nhất Hackathon</td>
+            <td>2023</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Trần Thị B</td>
+            <td>Giải nhì Lập trình cuộc thi</td>
+            <td>2022</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Lê Văn C</td>
+            <td>Top 5 Cuộc thi AI</td>
+            <td>2023</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Phạm Thị D</td>
+            <td>Giải thưởng Sáng tạo</td>
+            <td>2021</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    
+    <!-- 6. Biểu mẫu đăng ký (Chuyển xuống cuối) -->
+    <section>
+      <h2>Đăng ký tham gia câu lạc bộ</h2>
+      <form action="#" method="post">
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" name="name" placeholder="Nhập họ và tên của bạn" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+        
+        
+        <label for="interest">Sở thích:</label>
+        <textarea id="interest" name="interest" rows="4" placeholder="Chia sẻ sở thích của bạn"></textarea>
+        
+        
+        <button type="submit">Đăng ký</button>
+      </form>
+    </section>
+  </div>
+  
+  <footer>
+    <p style="text-align: center;">&copy; 2025 Câu lạc bộ Khoa học Công nghệ. Nơi thoả sức đam mê</p>
+  </footer>
+</body>
+</html>
