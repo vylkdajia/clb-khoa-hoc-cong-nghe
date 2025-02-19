@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Câu lạc bộ Khoa học Công nghệ</title>
+ <style>
+    /* Kiểu chung cho trang */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      background-color: #ffddbd;
+
+      .nav{
+
+      display: flex;
+
+      justify-content: space-between;
+
+      background-color: orange;
+
+      color: #orange;
+
+      padding: 0 1rem;
+
+      }
+      .nav ul{
+
+      display: flex;
+
+      List-style-type: none;}
+
+      .nav ul li{
+
+      margin: 0 45px;
+
+      padding: 0 15px;}
+    }
+    header {
+      background: #FF9933;
+      color:#FFF ;
+      text-align: center;
+      padding: 20px 0;
+    }
+    header img {
+      width: 100px;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .container {
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    
+    /* Thư viện hình ảnh */
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+.image-gallery img {
+  width: 100%;
+  max-width: 600px; /* Điều chỉnh kích thước tối đa của hình */
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+    
+    /* Video */
+    .video-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    video {
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    /* Group Chat Links */
+    .group-chat a {
+      display: inline-block;
+      margin-right: 10px;
+      text-decoration: none;
+      color: #3498db;
+      border: 1px solid #3498db;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .group-chat a:hover {
+      background: #3498db;
+      color: #fff;
+    }
+    
+    /* Biểu mẫu đăng ký */
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f5;
+    }
+    form label {
+      font-weight: bold;
+    }
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    form button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    form button:hover {
+      background: #2980b9;
+    }
+    
+    /* Pseudo-element và pseudo-class */
+    h2::after {
+      content: " ★";
+      color: gold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Phần giới thiệu chi tiết với lớp giả và phần tử giả */
+    .club-intro {
+      background-color: orange;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      position: relative;
+      max-width: 800px;
+      margin: 20px auto;
+      transition: box-shadow 0.3s ease;
+    }
+    .club-intro::before {
+      content: "THÔNG TIN CÂU LẠC BỘ:";
+      display: block;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: orange;
+      margin-bottom: 10px;
+    }
+    .club-intro:hover {
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    .club-intro h2 {
+      margin-top: 0;
+    }
+    .club-intro h3::after {
+      content: " ★";
+      color: gold;
+    }
+    .club-intro p {
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .info {
+      font-style: italic;
+      color: #555;
+    }
+    
+    /* Bảng thành tích */
+    table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #3498db;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: -1;
+      max-width: 100%;
+      padding-right: 3rem;
+      padding-left: 3rem;
+      background-color: orange;
+    }
+    .block_3 {
+      flex: 0 0 auto;
+      width: 30%;
+      margin: 20px;
+    }
+    .cell img {
+      width: 50%;
+    }
+    .cell text {
+      width: 50%;
+      padding-left: 5rem;
+    }
+    .img {
+      width: 100%;
+      height: 100%;
+    }
+    .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-link">
+        <ul>
+            <li><a href="index.html">Trở về</a></li>
+            <li><a href="dk.html">Đăng kí tham gia CLB</a></li>          
+        </ul>
+    </div>
+</div>
+  <header>
+    <img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/463379620_1094579886009571_8736483100342870461_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHvhVopZl14vyIomHAiGLJfe-Qxtvt8Hhx75DG2-3weHItI2rtiZ1LPT9BlA3ory0tEuRbQ_IFTvRVDsNbjk8Md&_nc_ohc=p6V4V4GMGpAQ7kNvgHZw9jX&_nc_oc=Adgc_MvEgIBRfvudIObE7GHd6DZuujlJAjasC3ZNHQCk4Qvdb9lv3L1Ia8oFK8YgU5Q&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AQW9VcUTRoQNW4rOST8tvYx&oh=00_AYDc1Q6aIEZT1MILT5612HHWRzU2mTUfW7blrimrUxQg9g&oe=67B7E9A9" alt="Profile Picture" class="profile-picture">
+    <h1>Đăng kí tham gia CLB</h1>
+    <p>Nơi kết nối đam mê và sáng tạo</p>
+  </header>
+  
+  <div class="container">
+    <!-- 1. Giới thiệu (Hợp nhất giới thiệu chung và chi tiết, đẩy lên đầu) -->
+    <section class="club-intro">
+      <h2>Trang đăng kí tham gia CLB</h2>
+      <p>
+        Trang đăng kí tham gia các CLB của THPT Đan Phượng. Các CLB được lập ra để kết nối các học sinh có cùng đam mê lại với nhau. Nó cũng là nơi giúp các học sinh phát triển thêm nhiều kĩ năng có ích.
+      </p>
+      <h3>Thông tin chi tiết</h3>
+      <p class="info">Địa chỉ: Trường THPT Đan Phượng, huyện Đan Phượng, thành phố Hà Nội</p>
+      <p class="info">Ngày thành lập: 16/02/2025</p>
+      <p class="info">Số điện thoại: 02433.885.822</p>
+      <p class="info">Email: danphuong2school@gmail.com</p>
+    </section>
+    
+    <!-- 2. Hình ảnh -->
+    <section>
+      <h2>Hình ảnh về câu lạc bộ</h2>
+      <div class="image-gallery">
+        <table>
+          <tr>
+
+            <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/476905239_927345649384068_6769399990449895915_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEtpbD1Q_SJb2XGDVRK-n33ahVrAOe7RmVqFWsA57tGZeImHR_GNHkiflnpPFL1LjSVBuXKGH_Y1JTX5tGtVZt1&_nc_ohc=_eCzQWWCD9gQ7kNvgEH1s0p&_nc_oc=AdhOJZ8mr0bQoZvACZhJmLfRsth4CKxh0amq5kZLS9BBmG2TobwA7Vy0bJXu4Ji9X98&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=Aib9nUFdo5rD9b4puJ3A9u1&oh=00_AYCXK7suEDXQVEIGDXGw7kOlcvkm7htBACYQRV3RB7g2HA&oe=67BBB5B0" alt="CLB tiếng Anh"></td>
+            <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/376630828_785407633591061_246293358104307131_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeFPVGA2E5cW7o-YG5cCbe4shZsqZlSMmPOFmypmVIyY8xKetw0TUi5eAzHeG2tRYn4cbeEYAdoPVHcDWImmyOMo&_nc_ohc=BhpAsFuLzscQ7kNvgFQcgDE&_nc_oc=AdgSp1repuTvYZmNjrt4iEjyVDQEHUI5Dew2H11uP0T6447H1KDgu_YPm74xIIfmvtU&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AYeE9i7-vTZqEXyLgDEScpN&oh=00_AYAsQSFaJ5OT-bxYXiXcE6W5YJYPz5OORyT15aCGnLvF9g&oe=67BBB9CF" alt="Hình ảnh hoạt động của câu lạc bộ 2"></td></tr>
+          <tr>  
+            <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/471383743_560794323601686_7957697717631225239_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHo5PkTCN7O8gq8x7kgFDR26T50AtYIWPLpPnQC1ghY8mjiRPdhIbM479eNR_MEeY7ikt_66TWUt5iNFKy_O2Xf&_nc_ohc=33M09kqxOhkQ7kNvgFP4HTF&_nc_oc=AdhW-G8JtvCiZk3lvj0R9IKdxiZ803A3wTb_TwY5vOU6NKIvoy0O0AP7G50GgimuXqE&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=Az6_Sp-8xRCBOBzU0BQj_kB&oh=00_AYCbwepVALng-UfUi2_ch1CN47h5Fc7DJ9QsXBZW_hDyTw&oe=67BBC30A" alt="Hình ảnh hoạt động của câu lạc bộ 3"></td>
+            <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/462237591_498241533182539_2671960659664548854_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeECSgV32Q_48OgkquQEAQs2-7yAcbmDbeL7vIBxuYNt4q2Qo6aQJP8oOeMsxfdx4DPgkNDV3WfWnz4Gnb13-Oyw&_nc_ohc=rIHN0J5SIPEQ7kNvgEGqXhC&_nc_oc=AdgPV60jHaIxenPLJqcYW1zh2W4CTPk7-Io-thTChJf_ZyHZS6kMdL2UCekm5A7hQXU&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AukiIF_u5t2w7sP5-GrL14K&oh=00_AYCEuOV8rq6OgHaESb3G6_FEfVhsxS7pk4aNtBEkcMhpbA&oe=67BBB21C" alt="Hình ảnh hoạt động của câu lạc bộ 3"></td></tr></table>
+      </div>
+    </section>
+    
+    <!-- 3. Video giới thiệu -->
+<section>
+  <h2>Video giới thiệu</h2>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/e9dZQelULDk" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+    </iframe>
+  </div>
+</section>
+
+    
+    <!-- 4. Link Group Chat -->
+    <section>
+      <h2>Tham gia Group Chat</h2>
+      <div class="group-chat">
+        <a href="https://chat.example.com/facebook" target="_blank">Group Chat Facebook</a>
+        <a href="https://chat.example.com/zalo" target="_blank">Group Chat Zalo</a>
+      </div>
+    </section>
+    
+   
+    
+    <!-- 6. Biểu mẫu đăng ký (Chuyển xuống cuối) -->
+    <section>
+      <h2>Đăng ký tham gia câu lạc bộ</h2>
+      <form action="#" method="post">
+        <label for="name">Họ và tên:</label>
+        <input type="text" id="name" name="name" placeholder="Nhập họ và tên của bạn" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required>
+        <label for="clb">Chọn CLB:</label>
+        <select id="clb" name="clb">
+          <option value="CLB Tiếng Anh">CLB Tiếng Anh</option> 
+          <option value="CLB Sách và Hành động">CLB Sách và Hành động</option>
+          <option value="CLB Nhảy">CLB Nhảy</option>
+          <option value="CLB Sân khấu và Điện ảnh">CLB Sân khấu và Điện ảnh</option>
+        <label for="interest">Sở thích:</label>
+        <textarea id="interest" name="interest" rows="4" placeholder="Chia sẻ sở thích của bạn"></textarea>
+        
+        
+        <button type="submit">Đăng ký</button>
+      </form>
+    </section>
+  </div>
+  
+  
+<footer>
+    <table width="100%">
+        <tr>
+            <td>
+                <div class="row" style="padding-left: 3rem">
+                    <div style="width:60%">
+                        <h4>Liên hệ: </h4>
+                        <ul>
+                            <li>Website: <a href="http://thptdanphuong.edu.vn" class="link">Trường THPT Đan Phượng</a></li>
+                            <li>SĐT: 02433.885.822</li>
+                            <li>Mail: danphuong2school@gmail.com</li>
+                        </ul>
+                    </div>
+                    <div style="width:10%"></div>
+                    <div style="width:30%">
+                        <div>
+                        <h4>Xem thêm:</h4>
+                        <ul>
+                            <li><a href="ta.html" class="link">CLB Tiếng Anh</a></li>
+                            <li><a href="svhd.html" class="link">CLB Sách và hành động</a></li>
+                            <li><a href="n.html" class="link">CLB Nhảy</a></li>
+                            <li><a href="skda.html" class="link">CLB Sân khấu và điện ảnh</a></li>
+                        </ul>
+                    </div>
+                    </div>
+                </div></td>
+            <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/463379620_1094579886009571_8736483100342870461_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHvhVopZl14vyIomHAiGLJfe-Qxtvt8Hhx75DG2-3weHItI2rtiZ1LPT9BlA3ory0tEuRbQ_IFTvRVDsNbjk8Md&_nc_ohc=p6V4V4GMGpAQ7kNvgHZw9jX&_nc_oc=Adgc_MvEgIBRfvudIObE7GHd6DZuujlJAjasC3ZNHQCk4Qvdb9lv3L1Ia8oFK8YgU5Q&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AQW9VcUTRoQNW4rOST8tvYx&oh=00_AYDc1Q6aIEZT1MILT5612HHWRzU2mTUfW7blrimrUxQg9g&oe=67B7E9A9"; width="150"></td></tr>
+        <tr>
+            <td>
+                 <div class="row" style="padding-left: 3rem">
+                    <div style="width:60%">
+                        <h4>Địa chỉ: </h4>  
+                        <ul>
+                            <li>Số 19 Phố Phan Đình Phùng, Thị trấn Phùng, Huyện Đan Phượng, Hà Nội</li>
+                        </ul>
+                    </div>    
+
+        <p style="text-align: center;">&copy; 2025 Câu lạc bộ Khoa học Công nghệ. Nơi thoả sức đam mê</p>
+      </footer>
+</body>
+</html>
