@@ -1,123 +1,640 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Các CLB THPT Đan Phượng</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quiz Lý luận GDTC / TDTT</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121735; --muted:#9aa3c7; --text:#eef1ff;
+      --accent:#7aa2ff; --good:#2ecc71; --bad:#ff6b6b; --warn:#f1c40f;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background: radial-gradient(1200px 800px at 10% -10%, #1a235c, transparent),
+                  radial-gradient(1200px 800px at 110% 10%, #2a1452, transparent),
+                  var(--bg);
+      color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .app{width:min(920px,100%);}
+    .header{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .title{font-size:22px; font-weight:800; letter-spacing:.3px;}
+    .sub{color:var(--muted); font-size:14px;}
+    .card{
+      background:linear-gradient(180deg, #151b40, #0f1430);
+      border:1px solid #232a55; border-radius:18px; padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;}
+    .pill{
+      background:#0e1433; border:1px solid #232a55; color:var(--muted);
+      padding:6px 10px; border-radius:999px; font-size:13px;
+    }
+    .qtext{font-size:19px; line-height:1.4; margin:12px 0 14px;}
+    .options{display:grid; grid-template-columns:1fr; gap:10px;}
+    .opt{
+      display:flex; gap:10px; align-items:flex-start;
+      background:#0e1433; border:1px solid #232a55; padding:12px 12px;
+      border-radius:12px; cursor:pointer; transition:.15s;
+    }
+    .opt:hover{transform:translateY(-1px); border-color:#3a4490;}
+    .opt input{margin-top:3px; transform:scale(1.2);}
+    .opt .label{font-weight:700; color:#cdd5ff; width:20px;}
+    .opt .otext{flex:1;}
+    .opt.disabled{cursor:not-allowed; opacity:.9;}
+    .opt.correct{border-color:rgba(46,204,113,.9); background:rgba(46,204,113,.08);}
+    .opt.wrong{border-color:rgba(255,107,107,.9); background:rgba(255,107,107,.08);}
+    .feedback{
+      margin-top:12px; padding:10px 12px; border-radius:10px; font-size:15px;
+      background:#0e1433; border:1px dashed #3a4490;
+    }
+    .feedback.good{border-color:rgba(46,204,113,.9); color:#b9f6cf;}
+    .feedback.bad{border-color:rgba(255,107,107,.9); color:#ffd0d0;}
+    .feedback.warn{border-color:rgba(241,196,15,.9); color:#ffeaa7;}
+    .controls{margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;}
+    button{
+      background:var(--accent); color:#07102b; border:none; font-weight:800;
+      padding:10px 14px; border-radius:12px; cursor:pointer; transition:.12s;
+    }
+    button.secondary{
+      background:#0e1433; color:var(--text); border:1px solid #2a3270;
+      font-weight:700;
+    }
+    button:disabled{opacity:.5; cursor:not-allowed;}
+    .progress{
+      height:10px; background:#0e1433; border:1px solid #232a55; border-radius:999px; overflow:hidden;
+      margin-top:10px;
+    }
+    .bar{height:100%; width:0%; background:linear-gradient(90deg,#7aa2ff,#9b7bff);}
+    .footer{margin-top:10px; color:var(--muted); font-size:13px;}
+  </style>
 </head>
-<body bgcolor="#ffddbd">
-    <div class="nav">
-    <div class="nav-link">
-        <ul>
-            <li><a href="web2.html">Trang chủ</a></li>
-            <li><a href="dk.html">Đăng kí tham gia CLB</a></li>          
-        </ul>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="title">Quiz Lý luận GDTC / TDTT</div>
+      <div class="sub">Làm từng câu — chọn đáp án rồi xem kết quả ngay</div>
     </div>
+    <div class="row">
+      <div class="pill" id="setName">ĐỀ …</div>
+      <div class="pill" id="counter">0/0</div>
+      <div class="pill" id="scoreBox">Điểm: 0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="pill" id="qid">Câu …</div>
+      <div class="pill" id="status">Chưa trả lời</div>
+    </div>
+
+    <div class="qtext" id="qtext">...</div>
+    <div class="options" id="options"></div>
+
+    <div id="feedback" class="feedback" style="display:none;"></div>
+
+    <div class="controls">
+      <button id="checkBtn" disabled>Kiểm tra</button>
+      <button id="nextBtn" disabled>Câu tiếp theo</button>
+      <button id="restartBtn" class="secondary">Làm lại từ đầu</button>
+      <button id="shuffleBtn" class="secondary">Trộn câu hỏi</button>
+    </div>
+
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="footer" id="note"></div>
+  </div>
 </div>
-    <div class="header">
-        <img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/458419363_1060232939444266_6807080905512903084_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeE9wl6Xcsv7e-XxB-DDE3K9JpGL2aOMSLAmkYvZo4xIsB7v_A3FkxsyG0Bj9Nutk6BY3D6EODNjtCzMc_o0sArs&_nc_ohc=t_nN78Py-Y8Q7kNvgHKQdCK&_nc_oc=Adg22hVVl9c14Qyynh-psraOvFsZynhjv8AFhxx66VyNTGEsBV6bksw-flFCi3QC-_Y&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AdDF-Zs48YQMRA8U6ifByYw&oh=00_AYDdmySf1HRS_8lQCQeIJ0LSzVS3F3YDIZseDLS8ZouGpw&oe=67B7D631" alt="Cover Image" class="cover">
-        <div class="banner">Welcome to threadcity!</div>
-        <img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/463379620_1094579886009571_8736483100342870461_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHvhVopZl14vyIomHAiGLJfe-Qxtvt8Hhx75DG2-3weHItI2rtiZ1LPT9BlA3ory0tEuRbQ_IFTvRVDsNbjk8Md&_nc_ohc=p6V4V4GMGpAQ7kNvgHZw9jX&_nc_oc=Adgc_MvEgIBRfvudIObE7GHd6DZuujlJAjasC3ZNHQCk4Qvdb9lv3L1Ia8oFK8YgU5Q&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AQW9VcUTRoQNW4rOST8tvYx&oh=00_AYDc1Q6aIEZT1MILT5612HHWRzU2mTUfW7blrimrUxQg9g&oe=67B7E9A9" alt="Profile Picture" class="profile-picture">
-    </div>
 
-    <div class="profile-info">
-        <h1>CÁC CÂU LẠC BỘ</h1>
-        <h2>THPT Đan Phượng</h2>
-        <p>Giới thiệu về bản thân hoặc vị trí công việc</p>
-    </div>
-    <!-- Phần slogan -->
-    <div class="slogan">
-        <div class="slogan-box">
-            <h3 style="color: red;">Năng động</h3>
-            <h4>Hoạt động năng nổ và hiệu quả</h4>
-        </div>
-        <div class="slogan-box">
-            <h3 style="color: red;">Đam mê</h3>
-            <h4>Cháy hết mình với đam mê</h4>
-        </div>
-        <div class="slogan-box">
-            <h3 style="color: red;">Toả sáng</h3>
-            <h4>Chiến thắng mọi cuộc chơi</h4>
-        </div>
-    </div>
+<script>
+/*
+  ===========================
+  DỮ LIỆU CÂU HỎI
+  correct: "A"/"B"/... nếu biết đáp án
+  correct: null nếu anh cần tự điền theo đáp án tô đỏ trong PDF
+  ===========================
+*/
+const questions = [
+  // -------- ĐỀ 1 --------
+  {set:"ĐỀ 1", n:1, text:"Đại hội Olympic cổ đại đầu tiên được tổ chức vào năm nào trước công nguyên?",
+    options:{A:"775",B:"776",C:"777",D:"778"}, correct:'B'},
+  {set:"ĐỀ 1", n:2, text:"Chủ tịch Hồ Chí Minh ra lời kêu gọi toàn dân tập thể dục vào thời gian nào?",
+    options:{A:"26/3/1946",B:"27/3/1946",C:"26/3/1947",D:"27/3/1947"}, correct:'B'},
+  {set:"ĐỀ 1", n:3, text:"Chương trình đào tạo cho sinh viên chính quy của trường đại học Bách Khoa Hà Nội, môn GDTC được quy định bao nhiêu tiết?",
+    options:{A:"90",B:"120",C:"150",D:"180"}, correct:'C'},
+  {set:"ĐỀ 1", n:4, text:"Đường, đạm, chất béo... khi hoạt động vận động, năng lượng đầu tiên được huy động từ chất nào?",
+    options:{A:"Mỡ (Lipit)",B:"Đường (Gluxit)",C:"Đạm",D:"Muối và nước"}, correct:'B'},
+  {set:"ĐỀ 1", n:5, text:"Trong các hoạt động kéo dài, công suất lớn khi đường đã cạn, năng lượng chính để duy trì hoạt động được lấy từ chất nào?",
+    options:{A:"Mỡ (Lipit)",B:"Đường (Gluxit)",C:"Đạm",D:"Muối và nước"}, correct:'A'},
+  {set:"ĐỀ 1", n:6, text:"Máu toàn phần chiếm bao nhiêu % trọng lượng cơ thể?",
+    options:{A:"5 – 6%",B:"6 – 7%",C:"7 – 8%",D:"8 – 9%"}, correct:'C'},
+  {set:"ĐỀ 1", n:7, text:"Kỹ năng vận động hình thành theo 3 giai đoạn... các động tác thừa mất đi, động tác hợp lý nhịp nhàng. Đây là giai đoạn nào?",
+    options:{A:"Giai đoạn lan tỏa",B:"Giai đoạn tập trung",C:"Giai đoạn tự động hóa"}, correct:'B'},
+  {set:"ĐỀ 1", n:8, text:"Sức nhanh là khả năng phản ứng và thực hiện động tác:",
+    options:{A:"Với cường độ lớn nhất",B:"Với thời gian lớn nhất",C:"Với biên độ lớn nhất",D:"Với tốc độ cao"}, correct:'D'},
+  {set:"ĐỀ 1", n:9, text:"Bài tập nào dưới đây để phát triển sức nhanh?",
+    options:{A:"Bơi 400 – 800m",B:"Chạy 800m",C:"Chạy 30m, 60m, 80m, 100m",D:"Chèo thuyền 5000m"}, correct:'C'},
+  {set:"ĐỀ 1", n:10, text:"Sức mạnh của con người là khả năng khắc phục lực đối kháng bên ngoài hoặc đối kháng lại nó bằng:",
+    options:{A:"Sự nỗ lực ý chí",B:"Sự nỗ lực tối đa của người tập",C:"Sự nỗ lực của cơ bắp"}, correct:'C'},
+  {set:"ĐỀ 1", n:11, text:"Bài tập nào dưới đây để phát triển sức mạnh?",
+    options:{A:"Bơi 400 – 800m",B:"Nằm sấp chống đẩy, bật cóc 30m",C:"Đua xe đạp đường trường",D:"Chạy 1500m"}, correct:'B'},
+  {set:"ĐỀ 1", n:12, text:"Nguyên tắc thích hợp và cá biệt hóa nói đến việc tập luyện TDTT phải phù hợp với:",
+    options:{A:"Lứa tuổi",B:"Giới tính",C:"Sức khỏe, trình độ thể lực",D:"Cả 3 yếu tố trên"}, correct:'D'},
+  {set:"ĐỀ 1", n:13, text:"Nguyên tắc tăng tiến nói đến việc tập luyện TDTT phải là quá trình:",
+    options:{A:"Tăng nhanh LVĐ",B:"Liên tục tăng LVĐ trong tập luyện",C:"Tăng LVĐ liên tục và từ từ"}, correct:'C'},
+  {set:"ĐỀ 1", n:14, text:"Hiện tượng choáng trọng lực xảy ra do nguyên nhân nào?",
+    options:{A:"VĐV mệt mỏi, tập luyện quá sức",
+             B:"VĐV bị hạ đường huyết đột ngột",
+             C:"VĐV về đích dừng lại đột ngột làm hạn chế lưu thông máu về tim, gây thiếu oxy lên não",
+             D:"Điều kiện tập luyện nắng, nóng"}, correct:'C'},
+  {set:"ĐỀ 1", n:15, text:"Để cấp cứu người bị say nắng cần phải làm gì?",
+    options:{A:"Đưa vào chỗ thoáng mát, nới lỏng quần áo",
+             B:"Dùng khăn ướt lau người và đầu trán",
+             C:"Cho uống nước chè đường hoặc chanh muối",
+             D:"Cả ba đáp án trên"}, correct:'D'},
+  {set:"ĐỀ 1", n:16, text:"Va chạm mạnh gây bầm dập cơ bắp cần xử lý thế nào?",
+    options:{A:"Dùng ngay thuốc xoa bóp/dầu nóng",
+             B:"Dán ngay salonpas",
+             C:"Chườm lạnh 1–2 ngày đầu rồi mới xoa bóp"}, correct:'C'},
+  {set:"ĐỀ 1", n:17, text:"Hà hơi thổi ngạt cho người suy hô hấp (điện giật, chết đuối…) với tần số:",
+    options:{A:"10–15 lần/phút",B:"16–20 lần/phút",C:"60–70 lần/phút",D:"80–90 lần/phút"}, correct:'B'},
+  {set:"ĐỀ 1", n:18, text:"Phương pháp nào để kiểm tra mức độ phát triển thể lực?",
+    options:{A:"Quan sát",B:"Nhân trắc",C:"Cả 2 phương án trên"}, correct:'C'},
+  {set:"ĐỀ 1", n:19, text:"Công thức tính QVC?",
+    options:{A:"QVC=Chiều cao-(Vòng ngực hít vào+Vòng đùi thuận+Vòng cánh tay co)",
+             B:"QVC=h-(P+V)",
+             C:"QVC=Chiều cao+Vòng ngực hít vào+Vòng đùi thuận+Vòng cánh tay co"}, correct:'A'},
+  {set:"ĐỀ 1", n:20, text:"Test Haward mức tim mạch trung bình:",
+    options:{A:"H=56–64",B:"H>99",C:"H=65–79"}, correct:'C'},
 
-   <table width="100%"> 
-        <tr>
-           
-            <td class="cell_img"><a href="https://www.facebook.com/danphuongenglishclub"><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/476430301_926192999499333_4676315411756128165_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHKF8ZFaebyIxE_-Hns5Ip50g5flxh8usTSDl-XGHy6xB9LuOCbV6v4kRZ64vWsI-xsckPB_wlhWx2--bBUuP12&_nc_ohc=j1yVdjTOa9AQ7kNvgGhuNTs&_nc_oc=AdjFKtBJngs8lf0DXPgJM-vPJN7hq-9spZMIcdMt4h9zK-4DWv7YcJF2seBeatWJ7pk&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AXObVeKXy6EZDcaHmLJQeZA&oh=00_AYDLxDlnQMsRnNBUytErW-Ijp_qNHxjKBRIicCrv9HLfFQ&oe=67B7CC39" class="img"></a></td>
-            <td class="cell_img"><a href="https://www.facebook.com/svhd.dp"><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/472383828_1140783191386835_4855840599708969011_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEFAAbVqjlNqDG3TF-SKTDciCEMkYafqZiIIQyRhp-pmNqvAk7bKcr9_cH8VXJH4IepPejLNEsN_OC8C1sJ4zHs&_nc_ohc=33biu3KCPFUQ7kNvgFNi3YB&_nc_oc=Adgq18hqub2R1bmHKeHQFdh412gQnjRkbDItRHJ_EbGAxuWArWqaZjgJywjWmibSe2c&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AlU9OtthEI2Go_snPNbKmrh&oh=00_AYAmVeoCc8sEsc6hwgfRS-6TT12Y5qopeBd3jsv4OLbG0g&oe=67B68D2D" class="img"></a></td>
+  // -------- ĐỀ 2 --------
+  {set:"ĐỀ 2", n:1, text:"Chủ tịch Hồ Chí Minh ra lời kêu gọi toàn dân tập thể dục vào thời gian nào?",
+    options:{A:"27/3/1946",B:"27/3/1947",C:"27/3/1948",D:"27/3/1949"}, correct:'A'},
+  {set:"ĐỀ 2", n:2, text:"Bộ máy vận động bao gồm?",
+    options:{A:"Xương, cơ quan hô hấp",B:"Xương, hệ tuần hoàn",C:"Xương, cơ, dây chằng",D:"Xương, sự trao đổi chất"}, correct:'C'},
+  {set:"ĐỀ 2", n:3, text:"Trong nguyên tắc tự giác tích cực, động cơ cho người học được biểu hiện như thế nào?",
+    options:{A:"Sự khát khao vươn tới cái đẹp",
+             B:"Tìm hiểu ý nghĩa chân chính của TDTT",
+             C:"Khát khao vươn tới đẳng cấp TDTT",
+             D:"Nhận thức hứng thú về TDTT"}, correct:'B'},
+  {set:"ĐỀ 2", n:4, text:"Chức năng nào quyết định khả năng vận động và thích ứng của cơ thể với vận động?",
+    options:{A:"Hệ tim mạch",B:"Hệ hô hấp",C:"Hệ trao đổi chất",D:"Hệ thần kinh"}, correct:'C'},
+  {set:"ĐỀ 2", n:5, text:"Điền từ còn khuyết: Sức nhanh quy định chủ yếu đặc tính tốc độ … Động tác …",
+    options:{A:"(tự điền theo đề)",B:"",C:"",D:""}, correct:'A'},
+  {set:"ĐỀ 2", n:6, text:"Nhu cầu nước 1 ngày khoảng bao nhiêu lít?",
+    options:{A:"1–1,5",B:"1,5–2",C:"2–2,5",D:"2,5–3"}, correct:'C'},
+  {set:"ĐỀ 2", n:7, text:"Cấp cứu người bị say nắng trong tập luyện TDTT cần làm gì?",
+    options:{A:"Thoáng mát+nới lỏng+lau ướt+uống ozeron; nặng đưa BV",
+             B:"Thoáng mát+nới lỏng+lau ướt; nặng đưa BV",
+             C:"Thoáng mát+nới lỏng+uống ozeron; nặng đưa BV",
+             D:"Thoáng mát+nới lỏng+lau ướt+uống ozeron"}, correct:'A'},
+  {set:"ĐỀ 2", n:8, text:"Đoàn thể thao Việt Nam lần đầu tiên tham gia Olympic vào năm nào?",
+    options:{A:"1972 Munich",B:"1976 Montreal",C:"1980 Moscow",D:"1984 Los Angeles"}, correct:'C'},
+  {set:"ĐỀ 2", n:9, text:"Triệu chứng đau khớp, sưng tấy đỏ, có dịch/máu, giảm khả năng hoạt động: là chấn thương nào?",
+    options:{A:"Chạm thương",B:"Biến dạng bao khớp",C:"Sai khớp",D:"Bong gân"}, correct:'D'},
+  {set:"ĐỀ 2", n:10, text:"Nguyên tắc tăng dần yêu cầu nói đến việc tập luyện TDTT phải là quá trình?",
+    options:{A:"Tăng nhanh LVĐ",B:"Liên tục tăng LVĐ",C:"Tăng LVĐ liên tục và từ từ",D:"Tăng thời gian bài tập"}, correct:'C'},
+  {set:"ĐỀ 2", n:11, text:"Chỉ số QVC nghiên cứu trên đối tượng tuổi?",
+    options:{A:"18–25",B:"30–35",C:"40–45",D:"50–60"}, correct:'A'},
+  {set:"ĐỀ 2", n:12, text:"Bài tập phát triển sức bền yếm khí?",
+    options:{A:"Chạy dưới 2 phút",B:"Chạy dưới 4 phút",C:"Chạy dưới 6 phút",D:"Chạy dưới 8 phút"}, correct:'A'},
+  {set:"ĐỀ 2", n:13, text:"Tần số hô hấp khi tập luyện TDTT khoảng bao nhiêu?",
+    options:{A:"20–30",B:"25–35",C:"30–40",D:"35–45"}, correct:'C'},
+  {set:"ĐỀ 2", n:14, text:"Cách xử lý “đưa VĐV vào chỗ thoáng mát, nằm chân cao hơn đầu…” là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'D'},
+  {set:"ĐỀ 2", n:15, text:"Bầm dập cơ bắp do va chạm mạnh cần xử lý thế nào?",
+    options:{A:"Xoa bóp/dầu nóng ngay",B:"Dán salonpas + ga rô",C:"Chườm lạnh 1–2 ngày đầu rồi xoa bóp",D:"Chườm lạnh 3–4 ngày đầu rồi xoa bóp"}, correct:'C'},
+  {set:"ĐỀ 2", n:16, text:"Nhiệm vụ của kiểm tra y học TDTT là gì?",
+    options:{A:"Chỉ cho VĐV trình độ cao",
+             B:"Phát hiện sớm chấn thương/bệnh lý do tập luyện",
+             C:"Đánh giá giáo viên/HLV",
+             D:"Đánh giá sinh viên"}, correct:'B'},
+  {set:"ĐỀ 2", n:17, text:"Ga rô khi chảy máu động mạch/tĩnh mạch lớn không đặt quá?",
+    options:{A:"2 tiếng",B:"3 tiếng",C:"4 tiếng",D:"5 tiếng"}, correct:'A'},
+  {set:"ĐỀ 2", n:18, text:"Khó thở, đau bụng, chóng mặt, buồn nôn, muốn bỏ cuộc là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'A'},
+  {set:"ĐỀ 2", n:19, text:"Mềm dẻo là năng lực thực hiện động tác?",
+    options:{A:"Lâu nhất",B:"Cường độ lớn",C:"Biên độ lớn nhất",D:"Ngắn nhất"}, correct:'C'},
+  {set:"ĐỀ 2", n:20, text:"Lượng vận động trong 1 buổi tập TDTT phụ thuộc vào?",
+    options:{A:"Khối lượng & lặp lại",
+             B:"Khối lượng & thời gian",
+             C:"Khối lượng & cường độ",
+             D:"Khối lượng & kỹ năng"}, correct:'C'},
 
-        </tr>
-        <tr>
-            <td class="cell text" style="padding-left: 5rem">
-                <dl>
-                    <dt><h3 style="font-family: unbounded">Câu lạc bộ Tiếng Anh</h3></dt>
-                <a href="https://www.facebook.com/danphuongenglishclub"><dd>DEC-Dan Phuong English Club</dd></a>
-            </td>
-            <td class="cell_text" style="padding-left: 5rem">
-                <dl>
-                <dt><h3 style="font-family: unbounded">Câu lạc bộ Sách và hành động</h3></dt>
-                <dd><a href="https://www.facebook.com/svhd.dp">BNA Đan Phượng</a></dd>
-            </dl>
-            </td>
-        </tr>
-        <tr>
-            <td class="cell_img"><a href="https://www.facebook.com/profile.php?id=100090133700529"><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/471196103_560838310263954_6101688741945768577_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeH4x1WH2ZoEapZb_2JfSuhqSfuWA_vD8vNJ-5YD-8Py89hdZkUgt_djseRiT5D45WQfJyDGbcczrkEkomBSaIf2&_nc_ohc=X2OtCmtGcBkQ7kNvgH2YY0B&_nc_oc=AdjZna5et2pkkaFCDJXJSZLIdoQaF_Onup8EW5cLVFLy3eu8AE_qcO2O31ZoM_KG-L4&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=A0_iGKca2wT--pTW1JwMN88&oh=00_AYDJIGGFaIIrM--8qzabn8N5JRDyGzmQ3HU3t-wp2ezWMg&oe=67B69576" class="img"></a></td>
-            <td class="cell_img"><a href="https://www.facebook.com/profile.php?id=100089900900989"><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/475916568_584472727892752_4573376314270988644_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGN9ghbpaimW535qu5TyCRAc-EYynWm57dz4RjKdabntwnER3X57gRnGM4USYj1TWpx0-1FxrVjXfH3eU3MiqCs&_nc_ohc=UuyyLpDwg6oQ7kNvgE1waQj&_nc_oc=Adh8Szgc35pSrp5P75mveiAPLrfLopjLZQpyN13qNLCp0b50Cls7vJap0xMzsO77gSU&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AIQLbi9mMMLLrNlm6bPidcx&oh=00_AYCGOoV4fKYULuZXDPymS3pCI8dRTnsrLjzkjh9J3rpOnQ&oe=67B7DD6A" class="img"></a></td>
-        </tr>
-        <tr>
-            <td class="cell text" style="padding-left: 5rem">
-                <dl><dt><h3 style="font-family: unbounded">Câu lạc bộ Sân khấu và Điện ảnh</h3></dt>
-                <dd><a href="https://www.facebook.com/profile.php?id=100090133700529">SNS Đan Phượng</a></dd></dl>
-            </td>
-            <td class="cell text" style="padding-left: 5rem;">
+  // -------- ĐỀ 3 --------
+  {set:"ĐỀ 3", n:1, text:"“Luân phiên lượng vận động với nghỉ ngơi” là nguyên tắc nào?",
+    options:{A:"Thích hợp & cá biệt hóa",B:"Tăng dần yêu cầu",C:"Hệ thống",D:"Tự giác tích cực"}, correct:'C'},
+  {set:"ĐỀ 3", n:2, text:"Có mấy nội dung kiểm tra y học TDTT?",
+    options:{A:"4",B:"5",C:"6",D:"7"}, correct:'B'},
+  {set:"ĐỀ 3", n:3, text:"Chỉ số QVC nghiên cứu trên đối tượng tuổi?",
+    options:{A:"18–25",B:"30–35",C:"40–45",D:"50–60"}, correct:'A'},
+  {set:"ĐỀ 3", n:4, text:"Điền khuyết: Sức bền chung là sức bền trong hoạt động kéo dài với … thấp.",
+    options:{A:"Hoạt động",B:"Vận động",C:"Khối lượng",D:"Cường độ"}, correct:'D'},
+  {set:"ĐỀ 3", n:5, text:"Nhức đầu, hoa mắt, mồ hôi nhiều, mặt đỏ… là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'B'},
+  {set:"ĐỀ 3", n:6, text:"Mất bao nhiêu máu thì nguy hiểm đến sự sống?",
+    options:{A:"1/3",B:"1/4",C:"2/3",D:"1/5"}, correct:'A'},
+  {set:"ĐỀ 3", n:7, text:"Cân bằng giữa năng lượng hấp thụ và tiêu hao đánh giá gì?",
+    options:{A:"Áp suất không khí",B:"Thân nhiệt",C:"Trao đổi năng lượng",D:"Môi trường"}, correct:'C'},
+  {set:"ĐỀ 3", n:8, text:"Thoát khỏi cực điểm thì phải?",
+    options:{A:"Dừng tập",B:"Nỗ lực ý chí",C:"Hít thở sâu, giảm tần số bước",D:"B và C"}, correct:'D'},
+  {set:"ĐỀ 3", n:9, text:"Sự ra đời TDTT được ghi nhận trong chế độ xã hội nào?",
+    options:{A:"Nguyên thủy",B:"Chiếm hữu nô lệ",C:"Phong kiến",D:"Tư bản"}, correct:'B'},
+  {set:"ĐỀ 3", n:10, text:"Bong gân thường xảy ra ở khớp nào?",
+    options:{A:"Gối + cổ tay + vai + ngón cái + cổ chân",
+             B:"Gối + cổ tay + vai + ngón cái + khuỷu",
+             C:"Gối + cổ tay + ngón cái + cổ chân",
+             D:"Gối + cổ tay + vai + khuỷu + ngón cái + cổ chân",
+             E:"Gối + cổ tay + vai + khuỷu + cổ chân"}, correct:'C'},
+  {set:"ĐỀ 3", n:11, text:"Nguyên tắc thích hợp – cá biệt hóa phù hợp với?",
+    options:{A:"Lứa tuổi",B:"Giới tính",C:"Sức khỏe, trình độ thể lực",D:"Cả 3 yếu tố"}, correct:"D"}, // có "+ A" trong text cho B,C -> suy ra D
+  {set:"ĐỀ 3", n:12, text:"Mục đích kiểm tra y học TDTT là?",
+    options:{A:"Đánh giá sức khỏe, mức độ vận động, khả năng thích ứng",
+             B:"Đánh giá sức khỏe, năng lực vận động, khả năng thích ứng",
+             C:"Đánh giá sức khỏe, theo dõi vận động, khả năng thích ứng",
+             D:"Đánh giá sức khỏe, tuyển chọn và điều chỉnh huấn luyện"}, correct:'B'},
+  {set:"ĐỀ 3", n:13, text:"Bài tập phát triển sức mạnh?",
+    options:{A:"Bơi 400–800m",B:"Bơi 200–400m",C:"Bơi vượt sông",D:"Bơi ngược dòng"}, correct:'D'},
+  {set:"ĐỀ 3", n:14, text:"Test dung tích sống có ý nghĩa?",
+    options:{A:"Dung tích sống càng lớn → phổi lớn → hô hấp tốt",
+             B:"Dung tích sống tỉ lệ nghịch phổi",
+             C:"Dung tích sống nhỏ, phổi lớn",
+             D:"Dung tích sống tỉ lệ thuận phổi"}, correct:'A'},
+  {set:"ĐỀ 3", n:15, text:"Nguyên nhân chính gây chuột rút?",
+    options:{A:"Cường độ lớn + ăn uống chưa hợp lý",
+             B:"Khối lượng lớn + mất muối nước",
+             C:"Cường độ lớn + ứ axit lactic + mất muối nước",
+             D:"Khối lượng lớn + ứ axit lactic + mất muối nước",
+             E:"Cường độ lớn + ứ axit lactic + giảm thẩm thấu + mất muối nước"}, correct:'E'},
+  {set:"ĐỀ 3", n:16, text:"Chia năng lực phối hợp vận động thành mấy loại?",
+    options:{A:"6",B:"7",C:"8",D:"9"}, correct:'B'},
+  {set:"ĐỀ 3", n:17, text:"Nguyên nhân chính gây tiểu đường?",
+    options:{A:"Lười vận động + ăn uống + gen + môi trường + tim mạch yếu",
+             B:"Lười vận động + ăn uống + gen + miễn dịch kém + tim mạch yếu",
+             C:"Lười vận động + ăn uống + gen + môi trường + béo phì",
+             D:"Lười vận động + ăn uống + môi trường + miễn dịch kém",
+             E:"Lười vận động + ăn uống + gen + môi trường + miễn dịch kém"}, correct:'C'},
+  {set:"ĐỀ 3", n:18, text:"Quyết định phục hồi Olympic được đưa ra ngày?",
+    options:{A:"23/6/1893",B:"23/6/1894",C:"23/6/1895",D:"23/6/1896"}, correct:'B'},
+  {set:"ĐỀ 3", n:19, text:"Hà hơi thổi ngạt cho trẻ em suy hô hấp với tần số?",
+    options:{A:"14–16",B:"16–18",C:"18–20",D:"20–22 lần/phút"}, correct:'D'},
+  {set:"ĐỀ 3", n:20, text:"Sơ cứu gãy xương hở cần làm gì?",
+    options:{A:"Băng cầm máu + nẹp bất động + chuyển BV",
+             B:"Băng cầm máu + ủ ấm + chuyển BV",
+             C:"Băng cầm máu + nẹp + ủ ấm + chuyển BV",
+             D:"Nẹp + ủ ấm + chuyển BV"}, correct:'A'},
 
-                <dl><dt><h3 style="font-family: unbounded">Câu lạc bộ Nhảy  </h3></dt>
-                <dd><a href="https://www.facebook.com/profile.php?id=100089900900989">Dan Phuong Dance Club
-                </a></dd>
-            </td>  
-        </tr>
-    </table>
-    <footer>
-        <table width="100%">
-            <tr>
-                <td>
-                    <div class="row" style="padding-left: 3rem">
-                        <div style="width:60%">
-                            <h4>Liên hệ: </h4>
-                            <ul>
-                                <li>Website: <a href="http://thptdanphuong.edu.vn" class="link">Trường THPT Đan Phượng</a></li>
-                                <li>SĐT: 02433.885.822</li>
-                                <li>Mail: danphuong2school@gmail.com</li>
-                            </ul>
-                        </div>
-                        <div style="width:10%"></div>
-                        <div style="width:30%">
-                            <div>
-                            <h4>Xem thêm:</h4>
-                            <ul>
-                                <li><a href="ta.html" class="link">CLB Tiếng Anh</a></li>
-                                <li><a href="svhd.html" class="link">CLB Sách và hành động</a></li>
-                                <li><a href="n.html" class="link">CLB Nhảy</a></li>
-                                <li><a href="skda.html" class="link">CLB Sân khấu và điện ảnh</a></li>
-                            </ul>
-                        </div>
-                        </div>
-                    </div></td>
-                <td><img src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/463379620_1094579886009571_8736483100342870461_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHvhVopZl14vyIomHAiGLJfe-Qxtvt8Hhx75DG2-3weHItI2rtiZ1LPT9BlA3ory0tEuRbQ_IFTvRVDsNbjk8Md&_nc_ohc=p6V4V4GMGpAQ7kNvgHZw9jX&_nc_oc=Adgc_MvEgIBRfvudIObE7GHd6DZuujlJAjasC3ZNHQCk4Qvdb9lv3L1Ia8oFK8YgU5Q&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AQW9VcUTRoQNW4rOST8tvYx&oh=00_AYDc1Q6aIEZT1MILT5612HHWRzU2mTUfW7blrimrUxQg9g&oe=67B7E9A9"; width="150"></td></tr>
-            <tr>
-                <td>
-                     <div class="row" style="padding-left: 3rem">
-                        <div style="width:60%">
-                            <h4>Địa chỉ: </h4>  
-                            <ul>
-                                <li>Số 19 Phố Phan Đình Phùng, Thị trấn Phùng, Huyện Đan Phượng, Hà Nội</li>
-                            </ul>
-                        </div>    
-    </footer>
-   
+  // -------- ĐỀ 4 -------- (trùng nhiều câu ĐỀ 3; vẫn giữ)
+  {set:"ĐỀ 4", n:1, text:"Quyết định phục hồi Olympic được đưa ra ngày?",
+    options:{A:"23/6/1893",B:"23/6/1894",C:"23/6/1895",D:"23/6/1896"}, correct:'B'},
+  {set:"ĐỀ 4", n:2, text:"Hà hơi thổi ngạt cho trẻ em suy hô hấp với tần số?",
+    options:{A:"14–16",B:"16–18",C:"18–20",D:"20–22 lần/phút"}, correct:'D'},
+  {set:"ĐỀ 4", n:3, text:"“Luân phiên vận động với nghỉ ngơi” là nguyên tắc nào?",
+    options:{A:"Thích hợp & cá biệt hóa",B:"Tăng dần yêu cầu",C:"Hệ thống",D:"Tự giác tích cực"}, correct:'C'},
+  {set:"ĐỀ 4", n:4, text:"Có mấy nội dung kiểm tra y học TDTT?",
+    options:{A:"4",B:"5",C:"6",D:"7"}, correct:'B'},
+  {set:"ĐỀ 4", n:5, text:"Điền khuyết: Sức bền chung là sức bền trong hoạt động kéo dài với … thấp.",
+    options:{A:"(tự điền theo đề)",B:"",C:"",D:""}, correct:'A'},
+  {set:"ĐỀ 4", n:6, text:"Cân bằng năng lượng hấp thụ/tiêu hao đánh giá gì?",
+    options:{A:"Áp suất không khí",B:"Thân nhiệt",C:"Môi trường",D:"Trao đổi năng lượng"}, correct:'D'},
+  {set:"ĐỀ 4", n:7, text:"Thoát khỏi cực điểm thì phải?",
+    options:{A:"Dừng tập",B:"Nỗ lực ý chí",C:"Hít thở sâu giảm tần số bước",D:"B và C"}, correct:'D'},
+  {set:"ĐỀ 4", n:8, text:"Sự ra đời TDTT ghi nhận trong chế độ xã hội nào?",
+    options:{A:"Nguyên thủy",B:"Chiếm hữu nô lệ",C:"Phong kiến",D:"Tư bản"}, correct:'A'},
+  {set:"ĐỀ 4", n:9, text:"Bong gân thường xảy ra ở khớp nào?",
+    options:{A:"Gối+cổ tay+vai+ngón cái+cổ chân",
+             B:"Gối+cổ tay+vai+ngón cái+khuỷu",
+             C:"Gối+cổ tay+ngón cái+cổ chân",
+             D:"Gối+cổ tay+vai+khuỷu+ngón cái+cổ chân",
+             E:"Gối+cổ tay+vai+khuỷu+cổ chân"}, correct:'D'},
+  {set:"ĐỀ 4", n:10, text:"Nguyên tắc thích hợp – cá biệt hóa phù hợp với?",
+    options:{A:"Lứa tuổi",B:"Giới tính",C:"Sức khỏe, trình độ thể lực",D:"Cả 3 yếu tố"}, correct:"D"},
+  {set:"ĐỀ 4", n:11, text:"Mục đích kiểm tra y học TDTT là?",
+    options:{A:"Đánh giá sức khỏe, mức độ vận động, khả năng thích ứng",
+             B:"Đánh giá sức khỏe, năng lực vận động, khả năng thích ứng",
+             C:"Đánh giá sức khỏe, theo dõi vận động, khả năng thích ứng",
+             D:"Đánh giá sức khỏe, tuyển chọn & điều chỉnh huấn luyện"}, correct:'D'},
+  {set:"ĐỀ 4", n:12, text:"Bài tập phát triển sức mạnh?",
+    options:{A:"Bơi 400–800m",B:"Bơi 200–400m",C:"Bơi vượt sông",D:"Bơi ngược dòng"}, correct:'D'},
+  {set:"ĐỀ 4", n:13, text:"Mất bao nhiêu máu thì nguy hiểm?",
+    options:{A:"1/3",B:"1/4",C:"2/3",D:"1/5"}, correct:'A'},
+  {set:"ĐỀ 4", n:14, text:"Nhức đầu, hoa mắt, mồ hôi nhiều, mặt đỏ… là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'D'},
+  {set:"ĐỀ 4", n:15, text:"Sơ cứu gãy xương hở cần làm gì?",
+    options:{A:"Băng cầm máu+nẹp+bv",
+             B:"Băng cầm máu+ủ ấm+bv",
+             C:"Băng cầm máu+nẹp+ủ ấm+bv",
+             D:"Nẹp+ủ ấm+bv"}, correct:'A'},
+  {set:"ĐỀ 4", n:16, text:"Chỉ số QVC nghiên cứu trên tuổi?",
+    options:{A:"18–25",B:"30–35",C:"40–45",D:"50–60"}, correct:'A'},
+  {set:"ĐỀ 4", n:17, text:"Ý nghĩa test dung tích sống?",
+    options:{A:"Dung tích sống càng lớn → hô hấp tốt",
+             B:"Tỉ lệ nghịch phổi",
+             C:"Dung tích sống nhỏ phổi lớn",
+             D:"Tỉ lệ thuận phổi"}, correct:'A'},
+  {set:"ĐỀ 4", n:18, text:"Nguyên nhân chính gây chuột rút?",
+    options:{A:"Cường độ lớn + ăn uống chưa hợp lý",
+             B:"Khối lượng lớn + mất muối nước",
+             C:"Cường độ lớn + ứ axit lactic + mất muối nước",
+             D:"Khối lượng lớn + ứ axit lactic + mất muối nước",
+             E:"Cường độ lớn + ứ axit lactic + giảm thẩm thấu + mất muối nước"}, correct:'E'},
+  {set:"ĐỀ 4", n:19, text:"Chia năng lực phối hợp vận động thành mấy loại?",
+    options:{A:"6",B:"7",C:"8",D:"9"}, correct:'B'},
+  {set:"ĐỀ 4", n:20, text:"Nguyên nhân chính gây tiểu đường?",
+    options:{A:"Lười vận động+ăn uống+gen+môi trường+tim mạch yếu",
+             B:"Lười vận động+ăn uống+gen+miễn dịch kém+tim mạch yếu",
+             C:"Lười vận động+ăn uống+gen+môi trường+béo phì",
+             D:"Lười vận động+ăn uống+môi trường+miễn dịch kém",
+             E:"Lười vận động+ăn uống+gen+môi trường+miễn dịch kém"}, correct:'C'},
 
+  // -------- ĐỀ 5 --------
+  {set:"ĐỀ 5", n:1, text:"Giai đoạn nào xuất hiện cơ sở về lý luận giáo dục thể chất?",
+    options:{A:"Nguyên thủy",B:"Chiếm hữu nô lệ",C:"Phong kiến",D:"Tư bản"}, correct:'D'},
+  {set:"ĐỀ 5", n:2, text:"Các bước tiến hành cứu đuối đúng?",
+    options:{A:"Thông đường hô hấp – hà hơi – ép tim",
+             B:"Thông đường hô hấp – dốc nước – hà hơi – ép tim",
+             C:"Thông đường hô hấp – hà hơi – ép tim – dốc nước",
+             D:"Dốc nước – thông đường hô hấp – hà hơi – ép tim"}, correct:'D'},
+  {set:"ĐỀ 5", n:3, text:"Nguyên tắc hệ thống là nguyên tắc nói đến?",
+    options:{A:"Luyện tập thường xuyên liên tục",
+             B:"Luân phiên giữa tập và nghỉ",
+             C:"Sắp xếp nội dung hợp lý",
+             D:"Cả ba yếu tố"}, correct:'D'},
+  {set:"ĐỀ 5", n:4, text:"Đo chiều cao, cân nặng, vòng ngực, sức mạnh cơ, dung tích sống… là phương pháp nào?",
+    options:{A:"Quan sát",B:"QVC",C:"Erisman",D:"Nhân trắc"}, correct:'D'},
+  {set:"ĐỀ 5", n:5, text:"Điền khuyết: Sức bền chung… với … thấp.",
+    options:{A:"(tự điền theo đề)",B:"",C:"",D:""}, correct:'A'},
+  {set:"ĐỀ 5", n:6, text:"Máu toàn phần chiếm bao nhiêu % trọng lượng cơ thể?",
+    options:{A:"5–6%",B:"6–7%",C:"7–8%",D:"8–9%"}, correct:'C'},
+  {set:"ĐỀ 5", n:7, text:"Nhức đầu, hoa mắt, mặt đỏ, mồ hôi nhiều… là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'D'},
+  {set:"ĐỀ 5", n:8, text:"Việt Nam tham gia Olympic lần đầu vào năm nào?",
+    options:{A:"1972",B:"1976",C:"1980",D:"1984"}, correct:'C'},
+  {set:"ĐỀ 5", n:9, text:"Nguyên nhân chính gây chấn thương TDTT?",
+    options:{
+      A:"Không khởi động, sân bãi kém, trang phục không phù hợp, ý thức kỷ luật kém",
+      B:"Không khởi động, sân bãi kém, trang phục phù hợp, ý thức kỷ luật kém",
+      C:"Không khởi động, sân bãi kém, trang phục không phù hợp, chấn thương chưa lành, ý thức kỷ luật kém",
+      D:"Không khởi động, sân bãi kém, trang phục phù hợp, chấn thương chưa lành, ý thức kỷ luật kém"
+    }, correct:'C'},
+  {set:"ĐỀ 5", n:10, text:"Nguyên tắc nào là tiền đề chung để thực hiện các nguyên tắc khác?",
+    options:{A:"Thích hợp & cá biệt hóa",B:"Hệ thống",C:"Tự giác tích cực",D:"Tăng dần yêu cầu"}, correct:'C'},
+  {set:"ĐỀ 5", n:11, text:"Ý nghĩa test dung tích sống?",
+    options:{A:"Dung tích sống càng lớn → hô hấp tốt",
+             B:"Tỉ lệ nghịch phổi",
+             C:"Dung tích sống nhỏ phổi lớn",
+             D:"Tỉ lệ thuận phổi"}, correct:'A'},
+  {set:"ĐỀ 5", n:12, text:"Trong hình thành kỹ năng vận động, hệ xương khớp điều chỉnh sự sai sót kỹ thuật động tác?",
+    options:{A:"Đúng",B:"Sai"}, correct:'B'},
+  {set:"ĐỀ 5", n:13, text:"1 gam mỡ cung cấp bao nhiêu kcal?",
+    options:{A:"4,1",B:"4,3",C:"9,3",D:"5,1"}, correct:'B'},
+  {set:"ĐỀ 5", n:14, text:"Xử lý đúng khi bị chuột rút?",
+    options:{
+      A:"Kéo giãn cơ tối đa theo chiều ngược lại đến khi không co lại",
+      B:"Kéo giãn cơ tối đa đến khi không co lại và xoa bóp",
+      C:"Kéo giãn cơ theo chiều ngược lại và xoa bóp",
+      D:"Kéo giãn cơ tối đa theo chiều ngược lại đến khi không co lại và xoa bóp",
+      E:"Kéo giãn cơ theo chiều ngược lại đến khi không co lại và xoa bóp"
+    }, correct:'D'},
+  {set:"ĐỀ 5", n:15, text:"Sơ cứu vết thương rách da, chảy máu mao mạch cần làm gì?",
+    options:{
+      A:"Rửa sạch nước/thuốc sát trùng rồi băng",
+      B:"Rửa sạch rồi ga rô",
+      C:"Lau cồn từ mép ra ngoài rồi băng",
+      D:"Lau cồn từ mép ra ngoài rồi ga rô"
+    }, correct:'C'},
+  {set:"ĐỀ 5", n:16, text:"Test Haward mức tim mạch trung bình?",
+    options:{A:"H<55",B:"H=56–64",C:"H=65–79",D:"H=80–89"}, correct:'C'},
+  {set:"ĐỀ 5", n:17, text:"Kỹ năng vận động hình thành theo mấy giai đoạn?",
+    options:{
+      A:"Lan tỏa + Tập trung",
+      B:"Tự động hóa + (A)",
+      C:"Phản xạ có điều kiện + (A)",
+      D:"Phản xạ có điều kiện + (B)"
+    }, correct:"B"}, // text có "+ A" sau A và "+ A" sau B => B đúng
+  {set:"ĐỀ 5", n:18, text:"Hạ đường huyết làm rối loạn cơ chế điều hòa thân nhiệt?",
+    options:{A:"Đúng",B:"Sai"}, correct:'B'},
+  {set:"ĐỀ 5", n:19, text:"Bài tập phát triển sức mạnh?",
+    options:{A:"Bơi 100–200m",B:"Chạy 100–200m",C:"Chạy 30–80m",D:"Chèo thuyền 100–200m"}, correct:'B'},
+  {set:"ĐỀ 5", n:20, text:"Trong TDTT các tố chất thể lực phát triển thống nhất với kỹ năng nào?",
+    options:{A:"Kỹ năng động tác",B:"Kỹ năng lặp lại",C:"Kỹ năng vận động",D:"Kỹ năng phối hợp"}, correct:'C'},
+
+  // -------- ĐỀ 6 --------
+  {set:"ĐỀ 6", n:1, text:"Chủ tịch Hồ Chí Minh kêu gọi toàn dân tập thể dục vào thời gian nào?",
+    options:{A:"27/3/1946",B:"27/3/1947",C:"27/3/1948",D:"27/3/1949"}, correct:'A'},
+  {set:"ĐỀ 6", n:2, text:"Xử lý đúng khi bong gân cổ tay/cổ chân?",
+    options:{
+      A:"Chườm lạnh 1–2 ngày rồi chườm nóng + xoa bóp nhẹ",
+      B:"Chườm lạnh 2–3 ngày rồi chườm nóng + xoa bóp nhẹ",
+      C:"Chườm lạnh 3–4 ngày rồi chườm nóng + xoa bóp nhẹ",
+      D:"Chườm nóng + xoa bóp rồi băng ép bất động",
+      E:"Chườm lạnh + xoa bóp rồi băng ép bất động"
+    }, correct:'B'},
+  {set:"ĐỀ 6", n:3, text:"Nguyên tắc tăng dần yêu cầu là quá trình tăng lượng vận động thế nào?",
+    options:{A:"Đơn giản → phức tạp",B:"Liên tục và từ từ",C:"Dễ → khó",D:"Theo khả năng người tập"}, correct:'B'},
+  {set:"ĐỀ 6", n:4, text:"Kiểm tra hệ tim mạch trong vận động để biết có đáp ứng nhu cầu cung cấp … cho hoạt động hay không?",
+    options:{A:"Lượng oxy",B:"Vận động và thích ứng",C:"Năng lượng",D:"Dinh dưỡng và dưỡng khí"}, correct:'B'},
+  {set:"ĐỀ 6", n:5, text:"Điền khuyết: Sức nhanh phản ứng vận động phức tạp… dựa vào khả năng phán đoán … của người tập.",
+    options:{A:"(tự điền theo đề)",B:"",C:"",D:""}, correct:'A'},
+  {set:"ĐỀ 6", n:6, text:"Nhu cầu nước 1 ngày khoảng bao nhiêu lít?",
+    options:{A:"1–1,5",B:"1,5–2",C:"2–2,5",D:"2,5–3"}, correct:'B'},
+  {set:"ĐỀ 6", n:7, text:"Choáng trọng lực xảy ra do nguyên nhân chính nào?",
+    options:{
+      A:"Mệt mỏi quá mức",
+      B:"Hạ đường huyết đột ngột",
+      C:"Về đích dừng đột ngột hạn chế máu về tim",
+      D:"Nắng nóng",
+      E:"Bệnh đường hô hấp"
+    }, correct:'C'},
+  {set:"ĐỀ 6", n:8, text:"Đoàn thể thao Việt Nam lần đầu tham gia Olympic năm nào?",
+    options:{A:"1972 Munich",B:"1976 Montreal",C:"1980 Moscow",D:"1984 Los Angeles"}, correct:'C'},
+  {set:"ĐỀ 6", n:9, text:"Sai khớp thường xảy ra ở khớp nào?",
+    options:{A:"Cổ chân+khuỷu+ngón tay",B:"Cổ chân+khuỷu+vai",C:"Khuỷu+vai+ngón tay",D:"Khuỷu+vai+ngón cái"}, correct:'D'},
+  {set:"ĐỀ 6", n:10, text:"Có mấy nguyên tắc tập luyện TDTT?",
+    options:{A:"4",B:"5",C:"6",D:"7"}, correct:'B'},
+  {set:"ĐỀ 6", n:11, text:"Chỉ số QVC nghiên cứu trên tuổi?",
+    options:{A:"18–25",B:"30–35",C:"40–45",D:"50–60"}, correct:'A'},
+  {set:"ĐỀ 6", n:12, text:"Kỹ năng vận động… các động tác thừa mất đi… Đây là giai đoạn nào?",
+    options:{A:"Lan tỏa",B:"Tập trung",C:"Tự động hóa",D:"Cả 3"}, correct:'C'},
+  {set:"ĐỀ 6", n:13, text:"Tần số hô hấp người bình thường?",
+    options:{A:"14–18",B:"15–19",C:"16–20",D:"17–22 lần/phút"}, correct:'C'},
+  {set:"ĐỀ 6", n:14, text:"Mệt mỏi, đói, mặt tái, mồ hôi lạnh… là hiện tượng gì?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Choáng trọng lực",D:"Hạ đường huyết"}, correct:'D'},
+  {set:"ĐỀ 6", n:15, text:"Mẻ xương, lún xương, rạn xương là dạng nào?",
+    options:{A:"Gãy kín",B:"Gãy hở",C:"Gãy hoàn toàn",D:"Gãy không hoàn toàn"}, correct:'D'},
+  {set:"ĐỀ 6", n:16, text:"Nhiệm vụ kiểm tra y học TDTT là gì?",
+    options:{A:"Chỉ cho VĐV cao",B:"Phát hiện sớm chấn thương/bệnh lý do tập luyện",C:"Đánh giá GV/HLV",D:"Đánh giá SV"}, correct:'B'},
+  {set:"ĐỀ 6", n:17, text:"Ga rô không đặt quá?",
+    options:{A:"2 tiếng",B:"3 tiếng",C:"4 tiếng",D:"5 tiếng"}, correct:'A'},
+  {set:"ĐỀ 6", n:18, text:"“Trạng thái hô hấp lần hai” thuộc hiện tượng nào?",
+    options:{A:"Cực điểm",B:"Say nắng",C:"Hạ đường huyết",D:"Choáng trọng lực"}, correct:'A'},
+  {set:"ĐỀ 6", n:19, text:"Mềm dẻo là năng lực thực hiện động tác?",
+    options:{A:"Lâu nhất",B:"Cường độ lớn",C:"Biên độ lớn nhất",D:"Ngắn nhất"}, correct:'A'},
+  {set:"ĐỀ 6", n:20, text:"(Theo text trích) Lượng vận động trong 1 buổi tập phụ thuộc vào yếu tố nào?",
+    options:{
+      A:"Tay phải đặt chéo lên tay trái ở 1/2 dưới xương ức",
+      B:"Tay trái đặt chéo lên tay phải ở 1/2 dưới xương ức",
+      C:"Tay phải đặt chéo lên tay trái ở 1/3 dưới xương ức",
+      D:"Tay trái đặt chéo lên tay phải ở 1/3 dưới xương ức",
+      E:"Tay trái đặt chéo lên tay phải ở 1/2 tại xương ức"
+    }, correct:'C'},
+];
+
+// =========================
+// QUIZ ENGINE
+// =========================
+let order = [...questions.keys()];
+let idx = 0;
+let score = 0;
+let answered = false;
+let selectedKey = null;
+
+const setName = document.getElementById("setName");
+const counter = document.getElementById("counter");
+const scoreBox = document.getElementById("scoreBox");
+const qid = document.getElementById("qid");
+const statusEl = document.getElementById("status");
+const qtext = document.getElementById("qtext");
+const optionsEl = document.getElementById("options");
+const feedbackEl = document.getElementById("feedback");
+const checkBtn = document.getElementById("checkBtn");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
+const bar = document.getElementById("bar");
+const note = document.getElementById("note");
+
+function render(){
+  const q = questions[order[idx]];
+  setName.textContent = q.set;
+  counter.textContent = `${idx+1}/${order.length}`;
+  scoreBox.textContent = `Điểm: ${score}`;
+  qid.textContent = `Câu ${q.n}`;
+  statusEl.textContent = "Chưa trả lời";
+  statusEl.style.color = "var(--muted)";
+  qtext.textContent = q.text;
+
+  optionsEl.innerHTML = "";
+  const keys = Object.keys(q.options);
+
+  keys.forEach(k=>{
+    const div = document.createElement("label");
+    div.className = "opt";
+    div.innerHTML = `
+      <input type="radio" name="opt" value="${k}">
+      <div class="label">${k}.</div>
+      <div class="otext">${q.options[k]}</div>
+    `;
+    div.addEventListener("click", ()=>{
+      if(answered) return;
+      selectedKey = k;
+      checkBtn.disabled = false;
+      document.querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));
+      div.classList.add("selected");
+    });
+    optionsEl.appendChild(div);
+  });
+
+  feedbackEl.style.display = "none";
+  feedbackEl.className = "feedback";
+  feedbackEl.textContent = "";
+  checkBtn.disabled = true;
+  nextBtn.disabled = true;
+  answered = false;
+  selectedKey = null;
+
+  bar.style.width = `${(idx/order.length)*100}%`;
+
+  if(q.correct==null){
+    note.textContent = "⚠️ Câu này chưa có đáp án trong code (do PDF mất tô đỏ). Anh hãy điền correct ở mảng questions.";
+  } else {
+    note.textContent = "";
+  }
+}
+
+function check(){
+  if(answered || !selectedKey) return;
+  answered = true;
+
+  const q = questions[order[idx]];
+  const correct = q.correct;
+
+  const optNodes = [...document.querySelectorAll(".opt")];
+  optNodes.forEach(node=>{
+    node.classList.add("disabled");
+    const k = node.querySelector("input").value;
+    if(correct && k===correct) node.classList.add("correct");
+    if(k===selectedKey && correct && k!==correct) node.classList.add("wrong");
+  });
+
+  if(correct==null){
+    feedbackEl.style.display = "block";
+    feedbackEl.classList.add("warn");
+    feedbackEl.textContent = "Chưa có đáp án đúng cho câu này trong code. Anh hãy bổ sung ở trường correct.";
+    statusEl.textContent = "Không chấm điểm";
+    statusEl.style.color = "var(--warn)";
+  } else if(selectedKey===correct){
+    score++;
+    feedbackEl.style.display = "block";
+    feedbackEl.classList.add("good");
+    feedbackEl.textContent = `✅ Đúng rồi! Đáp án: ${correct}.`;
+    statusEl.textContent = "Đúng";
+    statusEl.style.color = "var(--good)";
+  } else {
+    feedbackEl.style.display = "block";
+    feedbackEl.classList.add("bad");
+    feedbackEl.textContent = `❌ Sai. Đáp án đúng: ${correct}.`;
+    statusEl.textContent = "Sai";
+    statusEl.style.color = "var(--bad)";
+  }
+
+  scoreBox.textContent = `Điểm: ${score}`;
+  nextBtn.disabled = false;
+  checkBtn.disabled = true;
+  bar.style.width = `${((idx+1)/order.length)*100}%`;
+}
+
+function next(){
+  if(idx<order.length-1){
+    idx++;
+    render();
+  } else {
+    qtext.textContent = "🎉 Hoàn thành! Anh bấm “Làm lại từ đầu” để luyện tiếp.";
+    optionsEl.innerHTML = "";
+    feedbackEl.style.display = "block";
+    feedbackEl.className = "feedback good";
+    feedbackEl.textContent = `Điểm cuối: ${score}/${order.length} câu.`;
+    nextBtn.disabled = true;
+    checkBtn.disabled = true;
+    statusEl.textContent = "Kết thúc";
+    bar.style.width = "100%";
+  }
+}
+
+function restart(){
+  idx=0; score=0; answered=false; selectedKey=null;
+  render();
+}
+
+function shuffleQuestions(){
+  for(let i=order.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [order[i],order[j]]=[order[j],order[i]];
+  }
+  restart();
+}
+
+checkBtn.addEventListener("click", check);
+nextBtn.addEventListener("click", next);
+restartBtn.addEventListener("click", restart);
+shuffleBtn.addEventListener("click", shuffleQuestions);
+
+render();
+</script>
 </body>
 </html>
-
